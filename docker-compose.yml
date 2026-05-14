@@ -1,42 +1,72 @@
 services:
-    app:
-        build:
-            context: .
-            dockerfile: Dockerfile
-        container_name: moneywise-app
-        env_file:
-            - .env
-        ports:
-            - "${PORT}:${PORT}"
-        environment:
-            DATABASE_URL: postgresql://${DB_USER}:${DB_PASSWORD}@${DOCKER_DB_HOST}:${DOCKER_DB_PORT}/${DB_NAME}
-        depends_on:
-            - db_container
-        networks:
-            - moneywise-network
-        command: >
-            sh -c "./wait-for-it.sh ${DOCKER_DB_HOST}:${DOCKER_DB_PORT} -- flask db upgrade && python app.py"
-        volumes:
-            - .:/app
+  app:
+    build:
+      context: .
+      dockerfile: Dockerfile
+    container_name: moneywise-app
+    env_file:
+      - .env
+    ports:
+      - "${PORT}:${PORT}"
+    environment:
+      DATABASE_URL: postgresql://${DB_USER}:${DB_PASSWORD}@${DOCKER_DB_HOST}:${DOCKER_DB_PORT}/${DB_NAME}
+    depends_on:
+      - db_container
+    networks:
+      - moneywise-network
+    command: >
+      sh -c "./wait-for-it.sh ${DOCKER_DB_HOST}:${DOCKER_DB_PORT} -- flask db upgrade && python app.py"
+    volumes:
+      - .:/app
 
-    db_container:
-        image: postgres:13
-        env_file:
-            - .env
-        environment:
-            POSTGRES_USER: ${DB_USER}
-            POSTGRES_PASSWORD: ${DB_PASSWORD}
-            POSTGRES_DB: ${DB_NAME}
-        ports:
-            - "${DB_PUBLIC_PORT}:${DOCKER_DB_PORT}"
-        volumes:
-            - db-data:/var/lib/postgresql/data
-        networks:
-            - moneywise-network
+  db_container:
+    image: postgres:13
+    env_file:
+      - .env
+    environment:
+      POSTGRES_USER: ${DB_USER}
+      POSTGRES_PASSWORD: ${DB_PASSWORD}
+      POSTGRES_DB: ${DB_NAME}
+    ports:
+      - "${DB_PUBLIC_PORT}:${DOCKER_DB_PORT}"
+    volumes:
+      - db-data:/var/lib/postgresql/data
+    networks:
+      - moneywise-network
+
+  pgadmin:
+    image: dpage/pgadmin4
+    container_name: moneywise-pgadmin
+    environment:
+      PGADMIN_DEFAULT_EMAIL: admin@moneywise.com
+      PGADMIN_DEFAULT_PASSWORD: admin
+    ports:
+      - "5050:80"
+    depends_on:
+      - db_container
+    networks:
+      - moneywise-network
+    volumes:
+      - pgadmin-data:/var/lib/pgadmin
+
+  jenkins:
+    image: jenkins/jenkins:lts
+    container_name: moneywise-jenkins
+    user: root
+    ports:
+      - "8080:8080"
+      - "50000:50000"
+    volumes:
+      - jenkins-data:/var/jenkins_home
+      - /var/run/docker.sock:/var/run/docker.sock
+    networks:
+      - moneywise-network
 
 volumes:
-    db-data:
+  db-data:
+  jenkins-data:
+  pgadmin-data:
 
 networks:
-    moneywise-network:
-        driver: bridge
+  moneywise-network:
+    driver: bridge
