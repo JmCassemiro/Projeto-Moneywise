@@ -25,11 +25,7 @@ def _env_int(name: str) -> int:
 
 
 def _env_list(name: str) -> list[str]:
-    return [
-        item.strip()
-        for item in _env(name).split(",")
-        if item.strip()
-    ]
+    return [item.strip() for item in _env(name).split(",") if item.strip()]
 
 
 def _database_uri() -> str:
@@ -59,6 +55,7 @@ class Config:
     MAIL_USERNAME = _env("MAIL_USERNAME", allow_blank=True) or None
     MAIL_PASSWORD = _env("MAIL_PASSWORD", allow_blank=True) or None
     MAIL_DEFAULT_SENDER = _env("MAIL_DEFAULT_SENDER")
+    MAIL_CONTACT_RECIPIENT = _env("MAIL_CONTACT_RECIPIENT")
 
     JWT_SECRET_KEY = _env("JWT_SECRET_KEY")
     JWT_TOKEN_LOCATION = _env_list("JWT_TOKEN_LOCATION")
@@ -68,9 +65,7 @@ class Config:
     JWT_COOKIE_NAME = _env("JWT_COOKIE_NAME")
     JWT_ACCESS_COOKIE_PATH = _env("JWT_ACCESS_COOKIE_PATH")
     JWT_REFRESH_COOKIE_PATH = _env("JWT_REFRESH_COOKIE_PATH")
-    JWT_ACCESS_TOKEN_EXPIRES = timedelta(
-        minutes=_env_int("JWT_ACCESS_TOKEN_MINUTES")
-    )
+    JWT_ACCESS_TOKEN_EXPIRES = timedelta(minutes=_env_int("JWT_ACCESS_TOKEN_MINUTES"))
 
 
 class DevelopmentConfig(Config):

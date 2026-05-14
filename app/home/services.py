@@ -1,3 +1,4 @@
+from flask import current_app
 from flask_mail import Message
 
 from app.extensions import mail
@@ -32,7 +33,7 @@ class ContactService:
         mail.send(
             Message(
                 subject="Nova mensagem de contato",
-                recipients=["joaomarcos.jm@ges.inatel.br"],
+                recipients=[current_app.config["MAIL_CONTACT_RECIPIENT"]],
                 html=email_body,
             )
         )

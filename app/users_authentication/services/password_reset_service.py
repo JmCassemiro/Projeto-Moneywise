@@ -32,7 +32,12 @@ class PasswordResetService:
             recipients=[user.email],
             html=PasswordResetService._email_body(user.name, reset_url),
         )
-        mail.send(message)
+        try:
+            mail.send(message)
+        except Exception as exc:
+            raise ValidationError(
+                "Erro ao enviar e-mail de recuperacao. Tente novamente."
+            ) from exc
 
     @staticmethod
     def reset_password(token: str, new_password: str) -> None:
