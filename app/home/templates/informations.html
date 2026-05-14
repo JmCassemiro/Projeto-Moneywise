@@ -1,0 +1,35 @@
+<!DOCTYPE html>
+<html lang="pt-br">
+
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Informações - MoneyWise</title>
+  <link rel="stylesheet" href="{{ url_for('home.static', filename='css/informations.css') }}" />
+  <link href="https://fonts.googleapis.com/css2?family=Jomhuria&display=swap" rel="stylesheet" />
+  <link href="https://fonts.googleapis.com/css2?family=Josefin+Sans:wght@300;400;700&display=swap" rel="stylesheet" />
+</head>
+
+<body>
+
+  {% include 'navbar.html' %}
+
+  <main>
+    <div id="text-container">
+      <h1>Sobre</h1>
+      <p>
+        O MoneyWise é uma plataforma inovadora projetada para ajudar você a
+        gerenciar suas finanças de maneira simples e inteligente. Nosso
+        objetivo é transformar a forma como você lida com seu dinheiro,
+        proporcionando ferramentas eficazes para controle de gastos,
+        planejamento financeiro e alcance de metas.
+      </p>
+    </div>
+
+    <div id="img-container">
+      <img src="{{ url_for('home.static', filename='images/info_image.png') }}" alt="Imagem de informações" />
+    </div>
+  </main>
+</body>
+
+</html>

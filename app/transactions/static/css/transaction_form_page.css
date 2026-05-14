@@ -1,0 +1,216 @@
+* {
+  font-family: "Josefin Sans", sans-serif;
+  box-sizing: border-box;
+}
+
+body {
+  background-color: #272827;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  height: 100vh;
+  margin: 0;
+  color: white;
+}
+
+.form-content {
+  padding: 20px;
+  margin: auto;
+  width: 80%;
+  max-width: 900px;
+}
+
+form>* {
+  margin: 20px 0;
+}
+
+.form-content h1 {
+  font-size: 36px;
+  margin-bottom: 30px;
+  font-weight: normal;
+  color: white;
+}
+
+.first-input-row {
+  display: flex;
+  gap: 30px;
+}
+
+
+.first-input-row .title-container {
+  width: 100%;
+}
+
+.first-input-row .payment-method-container {
+  width: 47%;
+}
+
+.second-input-row {
+  display: flex;
+  gap: 30px;
+  justify-content: center;
+  margin: 0;
+  padding: 0;
+}
+
+.second-input-row>* {
+  width: 100%;
+}
+
+input,
+select,
+textarea {
+  width: 100%;
+  padding: 8px;
+  margin: 8px 0;
+  border-radius: 5px;
+  border: none;
+  background-color: #18181B;
+  text-decoration: none;
+  color: #9a9a9a;
+  font-size: 20px;
+}
+
+select {
+  appearance: none;
+}
+
+textarea {
+  height: 200px;
+}
+
+.is_recurring_content {
+  margin-top: 20px;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+}
+
+.is_recurring_content .left-content {
+  display: flex;
+  align-items: center;
+}
+
+.is_recurring_content #checkbox {
+  width: auto;
+  height: auto;
+  transform: scale(1.5);
+  accent-color: #7E9DCA;
+}
+
+.is_recurring_content .checkbox_label {
+  color: #C3C3C3;
+  font-size: 24px;
+  margin: 0 0 0 10px;
+  width: auto;
+  height: auto;
+}
+
+.is_recurring_content number-of-payments-container {
+  width: 100%;
+  margin: 0;
+  display: flex;
+}
+
+
+
+.transaction-type-buttons {
+  display: flex;
+  justify-content: space-between;
+  margin: 30px auto;
+  gap: 50px;
+}
+
+.transaction-type-buttons button {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 5px;
+  width: 380px;
+  height: 100px;
+  padding: 15px;
+  border: none;
+  border-radius: 5px;
+  cursor: pointer;
+  font-size: 20px;
+  margin: 0 0;
+}
+
+.income-btn {
+  background-color: #18181B;
+  color: #92CA7E;
+}
+
+.expense-btn {
+  background-color: #18181B;
+  color: #CA7E7E;
+}
+
+.options-container {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  width: 100%;
+}
+
+.right-buttons {
+  display: flex;
+  gap: 10px;
+}
+
+.delete-btn {
+  background-color: transparent;
+  border: none;
+}
+
+.delete-btn a {
+  background-color: transparent;
+  text-decoration: none;
+  border: 1px solid #EFA23B;
+  color: #EFA23B;
+  padding: 10px;
+  border-radius: 5px;
+  cursor: pointer;
+  font-size: 20px;
+  display: block;
+}
+
+.delete-btn a:hover {
+  background-color: #EFA23B;
+  color: #26262B;
+}
+
+.submit-btn,
+.edit-btn {
+  background-color: transparent;
+  border: 1px solid #7E9DCA;
+  color: #7E9DCA;
+  padding: 10px;
+  border-radius: 5px;
+  cursor: pointer;
+  font-size: 20px;
+  display: block;
+}
+
+.submit-btn:hover,
+.edit-btn:hover {
+  background-color: #7E9DCA;
+  color: #26262B;
+}
+
+.cancel-btn {
+  border: 1px solid #C3C3C3;
+  color: #C3C3C3;
+  padding: 10px;
+  border-radius: 5px;
+  cursor: pointer;
+  font-size: 20px;
+  display: block;
+  margin: 0 0;
+  text-align: center;
+}
+
+.cancel-btn:hover {
+  background-color: #C3C3C3;
+  color: #26262B;
+}

@@ -1,0 +1,39 @@
+<!DOCTYPE html>
+<html lang="pt-br">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>MoneyWise</title>
+    <link
+      rel="stylesheet"
+      href="{{ url_for('home.static', filename='css/home.css') }}"
+    />
+    <link
+      href="https://fonts.googleapis.com/css2?family=Jomhuria&display=swap"
+      rel="stylesheet"
+    />
+    <link
+      href="https://fonts.googleapis.com/css2?family=Josefin+Sans:wght@300;400;700&display=swap"
+      rel="stylesheet"
+    />
+  </head>
+
+<body>
+  {% include 'navbar.html' %}
+
+  <main>
+    <div id="text-container">
+      <h1 id="main-title">MoneyWise</h1>
+      <p id="main-description">Transforme suas finanças em algo simples e inteligente. Controle gastos, alcance metas e
+        viva com mais tranquilidade!</p>
+      <div id="button-container">
+        <button id="start-button"><a href="{{ url_for('users.signup_page') }}">Comece Agora!</a></button>
+      </div>
+    </div>
+
+      <div id="img-container">
+        <img src="images/home_image.png" alt="image" id="home-image" />
+      </div>
+    </main>
+  </body>
+</html>

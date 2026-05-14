@@ -1,0 +1,121 @@
+body {
+  margin: 0;
+  font-family: Josefin Sans, sans-serif;
+  background-color: #272827;
+  color: #fff;
+}
+
+.container {
+  padding: 20px;
+}
+
+/* Centraliza os cards */
+.cards {
+  display: flex;
+  justify-content: center; /* centraliza horizontalmente */
+  gap: 20px;
+  margin-bottom: 30px;
+}
+
+/* Card individual */
+.card {
+  width: 400px; /* largura fixa */
+  padding: 20px;
+  border-radius: 5px;
+  color: #000;
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  background-color: #444;
+}
+
+/* Estilo da label e valor dentro do card */
+.card .label {
+  font-size: 16px;
+  margin-bottom: 5px;
+}
+
+.card .valor {
+  font-size: 24px;
+  font-weight: bold;
+}
+
+/* Cores específicas dos cards */
+.green {
+  background-color: #92ca7e;
+  color: #2a2a2f;
+}
+
+.red {
+  background-color: #ca7e7e;
+  color: #2a2a2f;
+}
+
+.blue {
+  background-color: #26262b;
+  color: #7e9dca;
+}
+
+/* Header do card */
+.card-header {
+  display: flex;
+  font-size: 20px;
+  justify-content: space-between;
+  align-items: center;
+  margin: 0;
+  padding: 0;
+}
+
+.card h1 {
+  font-size: 40px;
+  font-weight: normal;
+  padding: 0;
+  margin: 10px 0;
+}
+
+header div {
+  display: flex;
+  gap: 20px;
+  align-items: center;
+}
+
+header a {
+  text-decoration: none;
+  display: flex;
+  align-items: center;
+  gap: 5px;
+  color: #dadae0;
+}
+
+header i {
+  font-size: 20px;
+  padding-bottom: 8px;
+}
+
+header h1 {
+  font-size: 24px;
+  margin-bottom: 20px;
+  font-weight: 300;
+}
+
+/* Gráficos */
+.graficos-linha {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 20px;
+  margin-bottom: 30px;
+}
+
+.grafico {
+  flex: 1;
+  min-width: 300px;
+  background-color: #18181c;
+  padding: 20px;
+  border-radius: 5px;
+}
+
+.grafico .titulo {
+  margin-bottom: 10px;
+  font-size: 18px;
+  color: #ddd;
+}
