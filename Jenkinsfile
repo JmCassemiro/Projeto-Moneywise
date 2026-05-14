@@ -20,17 +20,13 @@ pipeline {
             }
         }
 
-                stage('Run Tests') {
-                        steps {
-                                sh '''
-                                mkdir -p htmlcov
-                                docker run --rm \
-                                    -e SECRET_KEY=$SECRET_KEY \
-                                    -v $PWD/htmlcov:/app/htmlcov \
-                                    $IMAGE_NAME pytest --cov=app --cov-report=html
-                                '''
-                        }
-                }
+
+        stage('Run Tests') {
+            steps {
+                // Only run tests inside the container. Do NOT run pytest on the Jenkins host!
+                sh 'docker run --rm -e SECRET_KEY=$SECRET_KEY -v $PWD/htmlcov:/app/htmlcov $IMAGE_NAME pytest --cov=app --cov-report=html'
+            }
+        }
 
     }
 
