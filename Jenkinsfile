@@ -20,20 +20,24 @@ pipeline {
             }
         }
 
-        stage('Run Tests') {
-            steps {
-                sh '''
-                docker run --rm \
-                  -e SECRET_KEY=$SECRET_KEY \
-                  $IMAGE_NAME pytest
-                '''
-            }
-        }
+                stage('Run Tests') {
+                        steps {
+                                sh '''
+                                mkdir -p htmlcov
+                                docker run --rm \
+                                    -e SECRET_KEY=$SECRET_KEY \
+                                    -v $PWD/htmlcov:/app/htmlcov \
+                                    -v $PWD/tests:/app/tests \
+                                    $IMAGE_NAME pytest --cov=app --cov-report=html
+                                '''
+                        }
+                }
+
     }
 
     post {
         always {
-            archiveArtifacts artifacts: '**/test-results/**', allowEmptyArchive: true
+            archiveArtifacts artifacts: 'htmlcov/**', fingerprint: true, allowEmptyArchive: true
         }
     }
 }
