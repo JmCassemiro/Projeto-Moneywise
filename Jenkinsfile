@@ -20,10 +20,10 @@ pipeline {
         }
 
         stage('Run Tests') {
-            steps {
-                sh 'pytest'
-            }
-        }
+    steps {
+        sh 'docker run --rm moneywise-app pytest'
+    }
+}
 
     }
 
