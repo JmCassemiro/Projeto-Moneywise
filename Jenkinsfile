@@ -27,7 +27,6 @@ pipeline {
                                 docker run --rm \
                                     -e SECRET_KEY=$SECRET_KEY \
                                     -v $PWD/htmlcov:/app/htmlcov \
-                                    -v $PWD/tests:/app/tests \
                                     $IMAGE_NAME pytest --cov=app --cov-report=html
                                 '''
                         }
