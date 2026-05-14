@@ -3,6 +3,7 @@ pipeline {
 
     environment {
         IMAGE_NAME = "moneywise-app"
+        SECRET_KEY = credentials('SECRET_KEY')
     }
 
     stages {
@@ -20,11 +21,14 @@ pipeline {
         }
 
         stage('Run Tests') {
-    steps {
-        sh 'docker run --rm moneywise-app pytest'
-    }
-}
-
+            steps {
+                sh '''
+                docker run --rm \
+                  -e SECRET_KEY=$SECRET_KEY \
+                  $IMAGE_NAME pytest
+                '''
+            }
+        }
     }
 
     post {
