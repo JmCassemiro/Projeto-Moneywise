@@ -1,0 +1,113 @@
+body {
+  background-color: #272827;
+  color: white;
+  height: 100vh;
+  margin: 0;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-family: "Josefin Sans", sans-serif;
+}
+
+.container {
+  background: transparent;
+  border-radius: 8px;
+  text-align: center;
+  padding: 40px;
+  max-width: 400px;
+  width: 100%;
+}
+
+.logo {
+  width: 82.5px;
+  height: 130.5px;
+  margin-bottom: 20px;
+  height: auto;
+  cursor: pointer;
+  transition: transform 0.2s ease-in-out;
+}
+
+.logo:hover {
+  transform: scale(1.05);
+}
+
+h2 {
+  margin-bottom: 30px;
+  color: #ffffff;
+  font-weight: 500;
+}
+
+.form-group label {
+  float: left;
+  color: white;
+  font-weight: 300;
+  margin-bottom: 5px;
+}
+
+.form-control {
+  background-color: #d9d9d9;
+  border: none;
+  border-radius: 5px;
+  margin-bottom: 20px;
+  height: 45px;
+  font-size: 14px;
+  padding-left: 10px;
+}
+
+.btn-submit {
+  background-color: transparent;
+  border: 1px solid #7E9DCA;
+  color: #7e9dca;
+  font-size: 20px;
+  padding: 15px 10px 10px 10px;
+  cursor: pointer;
+  border-radius: 5px;
+  text-decoration: none;
+  width: 100%;
+}
+
+.btn-submit:hover {
+  background-color: #7e9dca;
+  color: #0f1113;
+}
+
+.remember-forgot-container {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-bottom: 20px;
+}
+
+.remember-me-container {
+  display: flex;
+  justify-content: left;
+  align-items: center;
+  gap: 5px;
+}
+
+.remember-me-container input {
+  accent-color: #7E9DCA;
+}
+
+.remember-me-container label {
+  margin: 0;
+  line-height: 1;
+}
+
+.forgot-password-container a {
+  color: #7e9dca;
+}
+
+.alert {
+  font-size: 14px;
+  margin-bottom: 15px;
+}
+
+.text-center a {
+  color: #7e9dca;
+  text-decoration: none;
+}
+
+.text-center a:hover {
+  text-decoration: underline;
+}

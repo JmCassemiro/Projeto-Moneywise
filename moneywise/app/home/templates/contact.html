@@ -1,0 +1,52 @@
+<!DOCTYPE html>
+<html lang="pt-br">
+
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Contato - MoneyWise</title>
+  <link rel="stylesheet" href="{{ url_for('home.static', filename='css/contact.css') }}" />
+  <link href="https://fonts.googleapis.com/css2?family=Jomhuria&display=swap" rel="stylesheet" />
+  <link href="https://fonts.googleapis.com/css2?family=Josefin+Sans:wght@300;400;700&display=swap" rel="stylesheet" />
+</head>
+
+<body>
+  {% include 'navbar.html' %}
+
+  <main>
+    <section id="form-contact">
+      <div class="form-container">
+        <h1>Fale com a gente!</h1>
+        <form id="form-input" method="POST">
+          <input type="hidden" name="csrf_token" value="{{ csrf_token() }}">
+          <label for="name">Nome</label>
+          <input type="text" id="name" name="name" required />
+
+          <label for="email">Email</label>
+          <input type="email" id="email" name="email" required />
+
+          <label for="phone">Telefone</label>
+          <input type="tel" id="phone" name="phone" />
+
+          <label for="message">Como podemos te ajudar?</label>
+          <textarea id="message" name="message" rows="5" required></textarea>
+
+          <button type="submit">Enviar</button>
+        </form>
+      </div>
+
+      <div class="info-container">
+        <p><strong>Telefone</strong><br />+55 35 99999-9999</p>
+        <p><strong>E-mail</strong><br />contato@moneywise.com</p>
+        <p>
+          <strong>Endereço</strong><br />
+          MoneyWise<br />
+          Santa Rita do Sapucaí<br />
+          Brasil - Minas Gerais, 37540-973
+        </p>
+      </div>
+    </section>
+  </main>
+</body>
+
+</html>
