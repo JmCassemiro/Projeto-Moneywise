@@ -69,57 +69,19 @@ O **MoneyWise** é uma aplicação web de controle financeiro pessoal, criada pa
    cd MoneyWise
    ```
 
-2. Crie o arquivo `.env` com suas credenciais:
-
-   ```ini
-   FLASK_APP=app
-   FLASK_CONFIG=development
-   DEBUG=true
-   TESTING=true
-   WTF_CSRF_ENABLED=false
-   DB_HOST=localhost
-   DB_PORT=5433
-   DOCKER_DB_HOST=db_container
-   DOCKER_DB_PORT=5432
-   DB_PUBLIC_PORT=5433
-   DB_NAME=moneywise
-   DB_USER=postgres
-   DB_PASSWORD=meritopg
-   SQLALCHEMY_TRACK_MODIFICATIONS=false
-   SECRET_KEY=uma_chave_secreta
-   JWT_SECRET_KEY=uma_chave_secreta
-   SECURITY_PASSWORD_SALT=um_salt_seguro
-   JWT_TOKEN_LOCATION=headers,cookies
-   JWT_COOKIE_SECURE=false
-   JWT_COOKIE_SAMESITE=Lax
-   JWT_COOKIE_CSRF_PROTECT=false
-   JWT_COOKIE_NAME=access_token_cookie
-   JWT_ACCESS_COOKIE_PATH=/
-   JWT_REFRESH_COOKIE_PATH=/auth/refresh
-   JWT_ACCESS_TOKEN_MINUTES=30
-   MAIL_SERVER=localhost
-   MAIL_PORT=1025
-   MAIL_USE_TLS=false
-   MAIL_USE_SSL=false
-   MAIL_USERNAME=
-   MAIL_PASSWORD=
-   MAIL_DEFAULT_SENDER=noreply@moneywise.local
-   MAIL_CONTACT_RECIPIENT=contact@moneywise.local
-   ```
-
-3. Instale dependências:
+2. Instale dependências:
 
    ```bash
    pip install -r requirements.txt
    ```
 
-4. Aplique migrações:
+3. Aplique migrações:
 
    ```bash
    flask db upgrade
    ```
 
-5. Execute a aplicação:
+4. Execute a aplicação:
 
    ```bash
    flask run
