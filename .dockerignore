@@ -1,0 +1,16 @@
+.git
+.venv
+__pycache__
+.pytest_cache
+.coverage
+htmlcov
+reports
+dist
+node_modules
+playwright-report
+test-results
+*.pyc
+*.pyo
+*.log
+.env
+.env.*

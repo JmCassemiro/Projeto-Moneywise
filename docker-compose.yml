@@ -15,7 +15,7 @@ services:
     networks:
       - moneywise-network
     command: >
-      sh -c "./wait-for-it.sh ${DOCKER_DB_HOST}:${DOCKER_DB_PORT} -- flask db upgrade && python app.py"
+      sh -c "bash ./wait-for-it.sh ${DOCKER_DB_HOST}:${DOCKER_DB_PORT} -- flask db upgrade && python app.py"
     volumes:
       - .:/app
 
@@ -50,7 +50,9 @@ services:
       - pgadmin-data:/var/lib/pgadmin
 
   jenkins:
-    image: jenkins/jenkins:lts
+    build:
+      context: .
+      dockerfile: Dockerfile.jenkins
     container_name: moneywise-jenkins
     user: root
     ports:
