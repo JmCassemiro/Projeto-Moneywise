@@ -14,7 +14,7 @@ def resolveBranchName() {
         }
 
         branchName = sh(
-            script: "git name-rev --name-only HEAD 2>/dev/null | sed 's#^remotes/origin/##; s#^origin/##; s#~[0-9]*$##' || true",
+            script: "git name-rev --name-only HEAD 2>/dev/null | sed 's#^remotes/origin/##; s#^origin/##; s#~[0-9]*\$##' || true",
             returnStdout: true
         ).trim()
         if (branchName && branchName != 'undefined') {
