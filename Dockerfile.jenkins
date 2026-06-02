@@ -1,0 +1,17 @@
+FROM jenkins/jenkins:lts
+
+USER root
+
+RUN apt-get update && \
+    apt-get install -y curl && \
+    curl -fsSL https://get.docker.com | sh && \
+    rm -rf /var/lib/apt/lists/*
+
+USER jenkins
+
+RUN jenkins-plugin-cli --plugins \
+    git \
+    workflow-aggregator \
+    junit \
+    mailer
+    
