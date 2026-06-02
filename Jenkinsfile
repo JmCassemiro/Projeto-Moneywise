@@ -1,15 +1,45 @@
+def resolveBranchName() {
+    def branchName = (env.BRANCH_NAME ?: env.GIT_BRANCH ?: '').trim()
+    if (branchName) {
+        return branchName.replaceFirst(/^origin\//, '')
+    }
+
+    try {
+        branchName = sh(
+            script: "git branch --show-current || true",
+            returnStdout: true
+        ).trim()
+        if (branchName) {
+            return branchName
+        }
+
+        branchName = sh(
+            script: "git name-rev --name-only HEAD 2>/dev/null | sed 's#^remotes/origin/##; s#^origin/##; s#~[0-9]*$##' || true",
+            returnStdout: true
+        ).trim()
+        if (branchName && branchName != 'undefined') {
+            return branchName
+        }
+    } catch (err) {
+        echo "Branch name could not be resolved: ${err.getMessage()}"
+    }
+
+    return 'Not available'
+}
+
 def notifyUsers(String buildStatus) {
     def result = buildStatus ?: 'UNKNOWN'
     def recipients = (env.NOTIFICATION_EMAIL ?: env.MAIL_CONTACT_RECIPIENT ?: '').trim()
     def sender = (env.NOTIFICATION_FROM ?: env.MAIL_DEFAULT_SENDER ?: '').trim()
     def subjectPrefix = (env.NOTIFICATION_SUBJECT_PREFIX ?: '[MoneyWise]').trim()
     def subject = "${subjectPrefix} ${env.JOB_NAME} #${env.BUILD_NUMBER} - ${result}"
+    def branchName = resolveBranchName()
     def body = """MoneyWise pipeline finished with status: ${result}
 
 Job: ${env.JOB_NAME}
 Build: #${env.BUILD_NUMBER}
 URL: ${env.BUILD_URL ?: 'Not available'}
-Branch: ${env.BRANCH_NAME ?: 'Not available'}
+Branch: ${branchName}
 
 Artifacts generated:
 - ${env.PACKAGE_DIR}/
