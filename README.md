@@ -1,186 +1,220 @@
 # MoneyWise
 
-## 📖 Visão Geral
+MoneyWise é uma aplicação web para controle financeiro pessoal. O sistema permite registrar receitas e despesas, acompanhar saldo, consultar histórico financeiro e visualizar estatísticas por usuário autenticado.
 
-O **MoneyWise** é uma aplicação web de controle financeiro pessoal, criada para registrar receitas e despesas de maneira simples e intuitiva. Cadastre‑se e tenha acesso a um painel personalizado, onde você acompanha seu fluxo de caixa em tempo real. Com gráficos interativos, visualize suas entradas, saídas e saldo disponível, identifique tendências e alcance suas metas econômicas com facilidade — tudo num só lugar!
+O projeto também demonstra uma esteira DevOps completa com Docker, Docker Compose, Jenkins em container, testes automatizados, cobertura acima de 90%, publicação de imagem no Docker Hub e notificação de pipeline por e-mail.
 
-- 📥 **Registrar** entradas (salários, vendas, investimentos) e saídas (contas, compras, serviços)
-- 📊 **Visualizar** o saldo em tempo real através de dashboards claros
-- 🔍 **Analisar** tendências diárias, semanais, mensais e anuais
+## Sumário
 
-### Objetivos
+- [Funcionalidades](#funcionalidades)
+- [Stack Técnica](#stack-técnica)
+- [Arquitetura DevOps](#arquitetura-devops)
+- [Como Executar](#como-executar)
+- [Pipeline Jenkins](#pipeline-jenkins)
+- [Imagens Docker Hub](#imagens-docker-hub)
+- [Relatórios e Artefatos](#relatórios-e-artefatos)
+- [Uso de IA e SDD](#uso-de-ia-e-sdd)
+- [O que não foi feito por IA](#o-que-não-foi-feito-por-ia)
+- [Validação](#validação)
 
-- Fornecer uma ferramenta leve e escalável para finanças pessoais
-- Garantir segurança com autenticação JWT
-- Assegurar precisão de cálculos usando PostgreSQL
-- Oferecer flexibilidade: categorias customizadas e relatórios dinâmicos
+## Funcionalidades
 
-## 📋 Conteúdo
+- Cadastro, login e autenticação de usuários com JWT.
+- Registro, edição, listagem e remoção de transações financeiras.
+- Separação de dados por usuário autenticado.
+- Dashboard com receitas, despesas, saldo e estatísticas financeiras.
+- Recuperação de senha e envio de mensagens de contato.
+- Testes unitários e de integração para regras de domínio, rotas Flask e persistência.
 
-- [Demos Highlights](#-demos-highlights-)
-- [Funcionalidades Principais](#-funcionalidades-principais-)
-- [Tech Stack](#-tech-stack-)
-- [Instalação & Uso](#-instalação--uso-)
-- [DevOps / Jenkins](#-devops--jenkins)
-- [Uso de IA](#-uso-de-ia)
-- [Contribuição](#-contribuição-)
+## Stack Técnica
 
-## 🌟 Pricipais Demos de evolução do Projeto
+| Área                 | Tecnologias                                      |
+| -------------------- | ------------------------------------------------ |
+| Backend              | Python, Flask, Flask-SQLAlchemy, Flask-Migrate   |
+| Banco de dados       | PostgreSQL                                       |
+| Autenticação         | Flask-JWT-Extended, Flask-Bcrypt                 |
+| Formulários e e-mail | Flask-WTF, Flask-Mail                            |
+| Testes               | pytest, pytest-mock, pytest-cov                  |
+| DevOps               | Docker, Docker Compose, Jenkins, Docker Hub      |
+| Relatórios CI        | JUnit XML, Coverage XML, HTML Publisher, Mailpit |
 
-- **Demo 3:** Segurança JWT, transações dinâmicas Front↔Back e filtragem por usuário
-- **Demo 4:** Interfaces Figma-driven, gráficos com Plotly.py e testes E2E com Playwright
-- **Demo 5:** Containerização com Docker (app, DB, Nginx), VPS Hostinger e HTTPS via Let's Encrypt
+## Arquitetura DevOps
 
-## 🚀 Funcionalidades Principais
+O ambiente é orquestrado por Docker Compose e possui múltiplos containers:
 
-1. **Autenticação & Usuários**
-   - Login/Registro com JWT (header ou cookie)
-   - Perfis com avatar e data de nascimento
+| Serviço        | Finalidade                                      |
+| -------------- | ----------------------------------------------- |
+| `app`          | Aplicação Flask MoneyWise                       |
+| `db_container` | Banco PostgreSQL                                |
+| `jenkins`      | Jenkins em container para executar a pipeline   |
+| `pgadmin`      | Interface de administração do PostgreSQL        |
+| `mailpit`      | SMTP local para capturar notificações de e-mail |
 
-2. **Transações CRUD**
-   - Registrar receitas, despesas e recorrências (diárias a anuais)
-   - Integração Jinja2 + JS para cálculos dinâmicos sem recarga de página
-   - Filtragem por usuário (user_id)
+O Jenkins executa o pipeline definido no `Jenkinsfile`. As etapas da pipeline ficam versionadas no repositório, atendendo ao requisito de não criar etapas manualmente pela interface gráfica do Jenkins.
 
-3. **Dashboard & Relatórios**
-   - Visão mensal de receitas, despesas e saldo
-   - Gráficos de histórico financeiro (1, 3, 6 e 12 meses) usando Plotly
-   - Metas financeiras configuráveis com alertas
+## Como Executar
 
-4. **Categorias Personalizadas**
-   - CRUD de categorias via SQLAlchemy
+Clone o repositório e acesse a pasta do projeto:
 
-5. **Testes & QA**
-   - Playwright para testes de Home, Auth, Perfil e Transações
+```bash
+git clone https://github.com/S07B-S107B-Moneywise/Moneywise-DevOps.git
+cd Moneywise-DevOps
+```
 
-## ⚙️ Tech Stack
-
-- **Back-end:** Python 3.x, Flask 3.x
-- **Banco:** PostgreSQL, Flask-SQLAlchemy e Flask-Migrate
-- **Autenticação:** Flask-JWT-Extended
-- **Front-end:** Jinja2, HTML5, CSS3, JavaScript
-- **Gráficos:** Plotly.py
-- **Contêineres:** Docker, Docker Compose
-
-## 💻 Instalação & Uso
-
-1. Clone o repositório:
-
-   ```bash
-   git clone https://github.com/SEU_USUARIO/MoneyWise.git
-   cd MoneyWise
-   ```
-
-2. Instale dependências:
-
-   ```bash
-   pip install -r requirements.txt
-   ```
-
-3. Aplique migrações:
-
-   ```bash
-   flask db upgrade
-   ```
-
-4. Execute a aplicação:
-
-   ```bash
-   flask run
-   ```
-
-Ou, usando Docker:
+Crie o arquivo de ambiente local:
 
 ```bash
 cp .env.example .env
-docker-compose up --build
 ```
 
-No Windows PowerShell, use `Copy-Item .env.example .env` antes de preencher as variaveis locais.
+No Windows PowerShell:
 
-Para recriar o banco do zero durante a refatoração:
+```powershell
+Copy-Item .env.example .env
+```
+
+Preencha no `.env` os valores locais de banco, secrets e variáveis de DevOps. O arquivo `.env` não deve ser commitado.
+
+Suba o ambiente:
 
 ```bash
-docker-compose down -v
-docker-compose up --build
+docker-compose up -d --build
 ```
 
-Acesse em `http://localhost:3000`.
+Acessos locais:
 
-## 🔧 DevOps / Jenkins
+| Serviço   | URL                     |
+| --------- | ----------------------- |
+| Aplicação | `http://localhost:3000` |
+| Jenkins   | `http://localhost:8080` |
+| pgAdmin   | `http://localhost:5050` |
+| Mailpit   | `http://localhost:8025` |
 
-O Jenkins roda em container pelo `docker-compose.yml` e executa as etapas definidas no `Jenkinsfile`: checkout, preparo de ferramentas, build da imagem, testes com cobertura, empacotamento, publicacao opcional no Docker Hub e notificacao.
+Para parar o ambiente:
 
-Variaveis sensiveis devem ficar apenas no `.env` local ou no Jenkins Credentials. O arquivo `.env` esta ignorado pelo Git; use `.env.example` como referencia.
+```bash
+docker-compose down
+```
 
-Para publicar a imagem no Docker Hub pela pipeline:
+## Pipeline Jenkins
 
-1. Crie no Jenkins uma credencial do tipo username/password ou token com ID `dockerhub-credentials`, ou defina outro ID em `DOCKERHUB_CREDENTIALS_ID`.
-2. Configure `DOCKERHUB_IMAGE` no `.env` ou no ambiente do job, por exemplo usando o formato `<usuario-dockerhub>/<imagem>`.
-3. Recrie o Jenkins quando alterar a imagem base: `docker-compose up -d --build jenkins`.
+A pipeline automatizada realiza:
 
-Para notificar por e-mail pela pipeline, configure no `.env` local as variaveis `NOTIFICATION_EMAIL` e `NOTIFICATION_FROM`, ou reutilize `MAIL_CONTACT_RECIPIENT` e `MAIL_DEFAULT_SENDER`. As credenciais SMTP devem ficar em `SMTP_USERNAME`/`SMTP_PASSWORD` ou `MAIL_USERNAME`/`MAIL_PASSWORD`. Se essas variaveis nao estiverem preenchidas, a pipeline continua funcional e salva o conteudo da notificacao como artefato.
+1. Checkout do repositório.
+2. Validação das ferramentas necessárias.
+3. Build da imagem Docker da aplicação.
+4. Execução dos testes unitários e de integração em container isolado.
+5. Geração dos relatórios JUnit, Coverage XML e HTML de cobertura.
+6. Empacotamento da imagem Docker como artefato `.tar`.
+7. Publicação opcional da imagem da aplicação no Docker Hub.
+8. Notificação por e-mail via script Python e variáveis de ambiente.
+9. Arquivamento dos pacotes e relatórios como artefatos do Jenkins.
 
-Os relatorios de testes e cobertura sao arquivados no Jenkins; quando os plugins estiverem instalados, o HTML Publisher mostra o relatorio HTML de cobertura e o plugin Coverage processa o `coverage.xml`.
+As credenciais sensíveis ficam fora do repositório:
 
-## 🤖 Uso de IA
+- GitHub token: configurado no Jenkins Credentials para checkout.
+- Docker Hub token: configurado no Jenkins Credentials para publicação da imagem.
+- Secrets da aplicação: definidos em `.env` local ou ambiente seguro.
 
-Este projeto utilizou IA como apoio de pair programming, revisao tecnica e debugging durante a etapa DevOps. A ferramenta utilizada foi o GitHub Copilot no VS Code.
+## Imagens Docker Hub
 
-### Como a IA foi utilizada
+Imagens publicadas para entrega DevOps:
 
-- Analise dos requisitos do PRD DevOps para identificar entregaveis pendentes: pipeline Jenkins, Docker Hub, notificacao por e-mail, artefatos, cobertura e uso de Docker Compose com multiplos containers.
-- Revisao dos arquivos `Dockerfile`, `Dockerfile.jenkins`, `docker-compose.yml`, `Jenkinsfile`, `.env.example` e scripts auxiliares.
-- Debugging da aplicacao no container, incluindo a identificacao do problema de line ending `CRLF` no `wait-for-it.sh`, que causava o erro `env: 'bash\r': No such file or directory`.
-- Apoio na configuracao dos plugins Jenkins necessarios para pipeline, Docker, relatorios HTML, cobertura e visualizacao de stages.
-- Refatoracao do `Jenkinsfile` para manter o pipeline funcional, publicar artefatos, publicar relatorio de cobertura, adicionar etapa paralela e preparar publicacao opcional no Docker Hub.
-- Organizacao de variaveis de ambiente para evitar senhas, tokens, chaves secretas e e-mails fixos no codigo versionado.
-- Criacao de um fluxo de notificacao por e-mail via script Python e variaveis de ambiente.
-- Adicao do Mailpit como SMTP local para demonstrar notificacoes sem depender de credenciais reais de Gmail, Outlook ou outro provedor externo.
+| Imagem                    | Finalidade                                                          |
+| ------------------------- | ------------------------------------------------------------------- |
+| `jmsz1/moneywise`         | Imagem da aplicação Flask publicada pela pipeline                   |
+| `jmsz1/moneywise-jenkins` | Imagem customizada do Jenkins com plugins e ferramentas necessárias |
 
-### Exemplos de prompts utilizados
+Links:
 
-- "Por que minha aplicacao nao esta subindo no container?"
-- "Pesquise e instale estes plugins do Jenkins no Dockerfile.jenkins."
+- Aplicação: `https://hub.docker.com/r/jmsz1/moneywise`
+- Jenkins customizado: `https://hub.docker.com/r/jmsz1/moneywise-jenkins`
+
+A imagem da aplicação não contém banco de dados nem secrets. Ela deve receber configuração por variáveis de ambiente e depende de um PostgreSQL acessível em runtime.
+
+A imagem do Jenkins não contém jobs nem credenciais. Ela contém Jenkins LTS, Docker CLI, Python 3 e plugins necessários para executar a pipeline versionada no `Jenkinsfile`.
+
+## Relatórios e Artefatos
+
+Durante a execução, a pipeline gera e arquiva:
+
+- `dist/`: pacote da imagem Docker exportada em `.tar`.
+- `reports/tests/`: resultado dos testes em formato JUnit XML.
+- `reports/coverage/`: relatório HTML e XML de cobertura.
+- `reports/notification/`: cópia da notificação enviada por e-mail.
+
+O relatório HTML de cobertura usa configuração em `.coveragerc` e estilo customizado em `coverage_custom.css`, tornando a visualização mais legível para apresentação.
+
+## Uso de IA e SDD
+
+O projeto utilizou IA de forma assistida, com revisão humana, principalmente para especificação, planejamento, implementação DevOps, debugging e documentação. As ferramentas utilizadas durante o desenvolvimento foram GitHub Copilot no VS Code e o Codex via OpenAI API para prompts mais complexos e organização de artefatos com o GPT 5.5.
+
+Também foi utilizado o conceito de SDD (Spec-Driven Development) com apoio do Spec Kit. O SDD trata especificações como artefatos centrais do desenvolvimento: primeiro são definidos requisitos, critérios de aceite, plano técnico e tarefas; depois a implementação segue esses documentos.
+
+No projeto, essa abordagem aparece em `Doc/specs/001-backend-unit-integration-tests/`, com os seguintes artefatos:
+
+| Artefato        | Papel no processo                                                                          |
+| --------------- | ------------------------------------------------------------------------------------------ |
+| `spec.md`       | Requisitos, histórias de usuário, critérios de aceite e casos de borda para testes backend |
+| `plan.md`       | Plano técnico, stack, estrutura esperada e estratégia de implementação                     |
+| `research.md`   | Decisões e contexto técnico pesquisado antes da implementação                              |
+| `quickstart.md` | Comandos e cenários de validação                                                           |
+| `tasks.md`      | Lista de tarefas incrementais, fases, dependências e itens paralelizáveis                  |
+
+O Spec Kit foi usado como referência metodológica para organizar prompts e artefatos de especificação. O fluxo seguido foi inspirado nos comandos e conceitos de SDD:
+
+- especificar o que precisava ser entregue antes de alterar código;
+- transformar requisitos em plano técnico;
+- quebrar o plano em tarefas executáveis;
+- validar implementação contra critérios de aceite;
+- manter documentação, testes e pipeline alinhados.
+
+Exemplos de uso de IA no projeto:
+
+- interpretar o PRD DevOps e mapear requisitos obrigatórios;
+- revisar `Dockerfile`, `Dockerfile.jenkins`, `docker-compose.yml` e `Jenkinsfile`;
+- diagnosticar erro de container causado por line ending `CRLF` no `wait-for-it.sh`;
+- estruturar pipeline Jenkins com testes, cobertura, artefatos, publicação Docker Hub e notificação;
+- organizar variáveis de ambiente para evitar senhas e tokens hardcoded;
+- configurar Mailpit como SMTP local para demonstração;
+- melhorar documentação técnica do README;
+- apoiar a criação e revisão dos artefatos de SDD: specs, plan, research, quickstart e tasks.
+
+Exemplos reais de prompts usados durante o desenvolvimento:
+
+- "Por que minha aplicação não está subindo no container?"
 - "Leia o PRD-DevOps e verifique o projeto, Docker, docker-compose, Dockerfile.jenkins e Jenkinsfile."
-- "Remova variaveis sensiveis hardcoded e deixe o pipeline funcional."
-- "Configure a parte de e-mail, Docker Hub e demais variaveis necessarias na env."
-- "Adicione uma sessao no README falando como a IA foi utilizada nessas modificacoes."
+- "Remova variáveis sensíveis hardcoded e deixe o pipeline funcional."
+- "Configure a parte de e-mail, Docker Hub e demais variáveis necessárias na env."
+- "Publique a imagem, configure a notificação por e-mail e coloque uma parte do pipeline rodando em paralelo."
+- "As variáveis do environment não podem ficar expostas; continue deixando funcional."
+- "Pesquise e instale estes plugins do Jenkins no Dockerfile.jenkins."
+- "O que é fallback?"
+- "Para que serve `TEST_DATABASE_URL`?"
+- "O que é o Mailpit?"
+- "Explique as tags do Docker Hub e por que aparecem metadados `unknown/unknown`."
+- "Leia o documento `PRD-DevOps.md` e foque apenas no tópico 7."
 
-### Decisoes tomadas com apoio da IA
+## O que não foi feito por IA
 
-- Manter `.env` fora do Git e criar `.env.example` apenas como modelo sem segredos.
-- Usar Jenkins Credentials para usuario/token do Docker Hub, mantendo `DOCKERHUB_IMAGE` como variavel nao sensivel.
-- Usar Mailpit para notificacao local, permitindo demonstrar o requisito de e-mail em ambiente Docker sem expor credenciais reais.
-- Deixar a publicacao no Docker Hub condicional: quando `DOCKERHUB_IMAGE` estiver configurado e a credencial existir, o push ocorre; caso contrario, o pipeline continua executando as demais etapas.
-- Rodar empacotamento e publicacao da imagem em paralelo no Jenkinsfile.
-- Salvar pacotes, relatorios de teste, cobertura e notificacao como artefatos do Jenkins.
+- Criação de contas externas do GitHub, Docker Hub ou serviços de e-mail.
+- Geração, exposição ou armazenamento de tokens e senhas reais.
+- Elaboração inicial do `requirements.txt` e definição das dependências principais do projeto.
+- Configuração real do banco de dados local, incluindo nome do banco, usuário, senha, portas e credenciais administrativas.
+- Preenchimento final do `.env` com valores reais de ambiente, credenciais e secrets.
+- Decisão final sobre credenciais, usuários, nomes de repositórios e imagens publicadas.
+- Execução da defesa ou validação oral do projeto.
+- Aprovação final das alterações no repositório.
 
-### Validacoes realizadas
+## Validação
 
-- `docker-compose config --quiet` para validar a configuracao do Compose.
-- `docker build -f Dockerfile.jenkins ...` para validar a imagem Jenkins com plugins e dependencias.
-- `python -m py_compile scripts/ci/send_notification.py` para validar o script de notificacao.
-- `git diff --check` para verificar problemas mecanicos de diff e line endings.
-- Execucao local do Mailpit e envio de uma notificacao de teste capturada na interface web.
+Comandos utilizados para validar a configuração:
 
-### O que nao foi feito por IA
+```bash
+docker-compose config --quiet
+docker build -f Dockerfile.jenkins -t moneywise-jenkins-devops-review .
+python -m py_compile scripts/ci/send_notification.py
+git diff --check
+```
 
-- Criacao de contas externas.
-- Geracao ou exposicao de senhas, tokens e credenciais reais.
-- Publicacao efetiva da imagem no Docker Hub sem credencial configurada pelo responsavel do projeto.
-- Decisao final sobre valores reais de ambiente, como usuario Docker Hub, e-mails reais e tokens.
-
-## 🤝 Contribuição
-
-- Ajude-nos a sempre melhorar!
-
-1. Fork este repositório
-2. Crie uma branch (`git checkout -b feature/nova-coisa`)
-3. Commit suas alterações (`git commit -m 'Adiciona xyz'`)
-4. Push para a branch (`git push origin feature/nova-coisa`)
-5. Abra um Pull Request
-
----
-
-> Simplificando sua jornada financeira! Escolha MoneyWise💡
+O pipeline Jenkins também valida a aplicação ao executar testes unitários e de integração com cobertura mínima de 90%.
