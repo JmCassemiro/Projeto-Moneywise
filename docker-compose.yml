@@ -60,9 +60,7 @@ services:
       - moneywise-network
 
   jenkins:
-    build:
-      context: .
-      dockerfile: Dockerfile.jenkins
+    image: jmsz1/moneywise-jenkins:latest
     container_name: moneywise-jenkins
     user: root
     environment:
