@@ -11,14 +11,22 @@ services:
     environment:
       DATABASE_URL: postgresql://${DB_USER}:${DB_PASSWORD}@${DOCKER_DB_HOST}:${DOCKER_DB_PORT}/${DB_NAME}
     depends_on:
-      - db_container
-      - mailpit
+      db_container:
+        condition: service_healthy
+      mailpit:
+        condition: service_healthy
     networks:
       - moneywise-network
     command: >
       sh -c "bash ./wait-for-it.sh ${DOCKER_DB_HOST}:${DOCKER_DB_PORT} -- flask db upgrade && python app.py"
     volumes:
       - .:/app
+    healthcheck:
+      test: ["CMD", "python", "-c", "import urllib.request; urllib.request.urlopen('http://localhost:${PORT:-3000}/')"]
+      interval: 30s
+      timeout: 10s
+      retries: 3
+      start_period: 40s
 
   db_container:
     image: postgres:13
@@ -34,6 +42,12 @@ services:
       - db-data:/var/lib/postgresql/data
     networks:
       - moneywise-network
+    healthcheck:
+      test: ["CMD-SHELL", "pg_isready -U ${DB_USER} -d ${DB_NAME}"]
+      interval: 10s
+      timeout: 5s
+      retries: 5
+      start_period: 10s
 
   pgadmin:
     image: dpage/pgadmin4
@@ -44,7 +58,8 @@ services:
     ports:
       - "5050:80"
     depends_on:
-      - db_container
+      db_container:
+        condition: service_healthy
     networks:
       - moneywise-network
     volumes:
@@ -58,6 +73,12 @@ services:
       - "1025:1025"
     networks:
       - moneywise-network
+    healthcheck:
+      test: ["CMD", "wget", "--quiet", "--tries=1", "--spider", "http://localhost:8025/"]
+      interval: 10s
+      timeout: 5s
+      retries: 3
+      start_period: 5s
 
   jenkins:
     image: jmsz1/moneywise-jenkins:latest # trocar por 'build:' abaixo caso precise modificar o jenkins
@@ -86,7 +107,8 @@ services:
       SMTP_USERNAME: ${SMTP_USERNAME:-}
       SMTP_PASSWORD: ${SMTP_PASSWORD:-}
     depends_on:
-      - mailpit
+      mailpit:
+        condition: service_healthy
     ports:
       - "8080:8080"
       - "50000:50000"
