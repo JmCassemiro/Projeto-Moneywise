@@ -110,7 +110,7 @@
             transaction.number_of_payments) }}
           </span>
 
-          <span class="transaction-category" style="background-color: {{ category_colors[transaction.category] }}">{{
+          <span class="transaction-category" style="background-color: {{ category_colors.get(transaction.category, '#D9D9D9') }}">{{
             transaction.category }}</span>
           <span class="transaction-date">{{ transaction.transaction_date }}</span>
         </div>
@@ -124,7 +124,7 @@
           <span class="transaction-amount {{ transaction.transaction_type }}">
             R$ {{ "%.2f"|format(transaction.amount) }}
           </span>
-          <span class="transaction-category" style="background-color: {{ category_colors[transaction.category] }}">{{
+          <span class="transaction-category" style="background-color: {{ category_colors.get(transaction.category, '#D9D9D9') }}">{{
             transaction.category }}</span>
           <span class="transaction-date">{{ transaction.transaction_date }}</span>
         </div>

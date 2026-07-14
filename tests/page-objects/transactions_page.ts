@@ -72,7 +72,7 @@ export class TransactionsPage {
     await this.page.getByText(transactionTitle).click();  }
 
   async deleteTransaction(transactionTitle: string) {
-    await this.page.getByRole('link', { name: 'Deletar' }).click();
+    await this.page.getByRole('button', { name: 'Deletar' }).click();
   }
 
   async expectTransactionNotToExist(transactionTitle: string) {

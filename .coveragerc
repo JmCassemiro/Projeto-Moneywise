@@ -1,0 +1,5 @@
+[run]
+source = app
+
+[html]
+extra_css = coverage_custom.css

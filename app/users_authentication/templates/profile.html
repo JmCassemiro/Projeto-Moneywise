@@ -4,6 +4,7 @@
 <head>
   <meta charset="UTF-8" />
   <title>Perfil</title>
+  <meta name="csrf-token" content="{{ csrf_token() }}" />
   <link rel="stylesheet" href="{{ url_for('users.static', filename='css/profile.css') }}" />
   <script src="{{ url_for('users.static', filename='js/profile.js') }}"></script>
   <link href="https://fonts.googleapis.com/css2?family=Josefin+Sans:wght@300;400;700&display=swap" rel="stylesheet" />
@@ -58,7 +59,7 @@
       <div class="info">
         <div class="profile-header">
           <h2>Perfil</h2>
-          <button id="edit-btn">
+          <button id="edit-btn" aria-label="Editar perfil">
             <i class="bi bi-pencil-square"></i>
           </button>
         </div>
@@ -90,7 +91,7 @@
         {% endfor %}
       {% endif %}
     {% endwith %}
-      <form id="delete-account-confirm-form" method="POST" action="/delete_account">
+      <form id="delete-account-confirm-form" method="POST" action="{{ url_for('users.delete_account') }}">
         {{ form.hidden_tag() }}
         
         <label for="password">Confirme sua senha:</label>

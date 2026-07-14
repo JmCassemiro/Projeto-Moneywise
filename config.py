@@ -1,95 +1,91 @@
-from socket import socket
-import psycopg2
-from flask_sqlalchemy import SQLAlchemy
-from flask_jwt_extended import JWTManager
-from flask_migrate import Migrate
-from flask_login import LoginManager
 import os
-from flask_mail import Mail
 from datetime import timedelta
 
-DB_HOST = "db_container"
-DB_NAME = "moneywise"
-DB_USER = "postgres"
-DB_PASS = "meritopg"
-DB_PORT = "5432"
+try:
+    from dotenv import load_dotenv
+except ImportError:
+    pass
+else:
+    load_dotenv()
 
-db = SQLAlchemy()
-login_manager = LoginManager()
-jwt = JWTManager()
-migrate = Migrate()
-mail = Mail()
+
+def _env(name: str, *, allow_blank: bool = False) -> str:
+    value = os.environ.get(name)
+    if value is None or (not allow_blank and value == ""):
+        raise RuntimeError(f"Missing required environment variable: {name}")
+    return value
+
+
+def _env_bool(name: str) -> bool:
+    return _env(name).strip().lower() in {"1", "true", "yes", "on"}
+
+
+def _env_int(name: str) -> int:
+    return int(_env(name))
+
+
+def _env_list(name: str) -> list[str]:
+    return [item.strip() for item in _env(name).split(",") if item.strip()]
+
+
+def _database_uri() -> str:
+    uri = os.environ.get("DATABASE_URL")
+    if uri:
+        return uri.replace("postgres://", "postgresql://", 1)
+
+    host = _env("DB_HOST")
+    port = _env("DB_PORT")
+    name = _env("DB_NAME")
+    user = _env("DB_USER")
+    password = _env("DB_PASSWORD")
+    return f"postgresql://{user}:{password}@{host}:{port}/{name}"
 
 
 class Config:
-    SQLALCHEMY_TRACK_MODIFICATIONS = False
-    SQLALCHEMY_DATABASE_URI = (
-        f'postgresql://postgres:{DB_PASS}@{DB_HOST}/{DB_NAME}'
-    )
-    SECRET_KEY = (
-        "k\x8d-\xbd\xb9\x05\xeax\x92\xd9{H\xf0\x9c\xf9\xde\x91\xc6\xe6"
-        "\xa8\x14\xf9\x89t"
-    )
+    SECRET_KEY = _env("SECRET_KEY")
+    SECURITY_PASSWORD_SALT = _env("SECURITY_PASSWORD_SALT")
 
-    MAIL_SERVER = 'smtp.gmail.com'
-    MAIL_PORT = 587
-    MAIL_USE_TLS = True
-    MAIL_USE_SSL = False
-    MAIL_USERNAME = 'suportemw011@gmail.com'
-    MAIL_PASSWORD = 'krofvxeymfmvsjwx'
-    MAIL_DEFAULT_SENDER = 'suportemw011@gmail.com'
-    SECURITY_PASSWORD_SALT = "7f2e1c9d3b4a6f8e"
+    SQLALCHEMY_DATABASE_URI = _database_uri()
+    SQLALCHEMY_TRACK_MODIFICATIONS = _env_bool("SQLALCHEMY_TRACK_MODIFICATIONS")
 
-    JWT_SECRET_KEY = (
-        "k\x8d-\xbd\xb9\x04\xfax\x92\xd9{H\xf0\x9c\xf9\xde\x91\xc6\xe6"
-        "\xa8\x14\xf9\x89t"
-    )
+    MAIL_SERVER = _env("MAIL_SERVER")
+    MAIL_PORT = _env_int("MAIL_PORT")
+    MAIL_USE_TLS = _env_bool("MAIL_USE_TLS")
+    MAIL_USE_SSL = _env_bool("MAIL_USE_SSL")
+    MAIL_USERNAME = _env("MAIL_USERNAME", allow_blank=True) or None
+    MAIL_PASSWORD = _env("MAIL_PASSWORD", allow_blank=True) or None
+    MAIL_DEFAULT_SENDER = _env("MAIL_DEFAULT_SENDER")
+    MAIL_CONTACT_RECIPIENT = _env("MAIL_CONTACT_RECIPIENT")
 
-    JWT_TOKEN_LOCATION = ["headers", "cookies"]
-    JWT_COOKIE_SECURE = False
-    JWT_COOKIE_CSRF_PROTECT = False
-    JWT_COOKIE_NAME = "access_token_cookie"
-    JWT_ACCESS_COOKIE_PATH = '/'
-    JWT_REFRESH_COOKIE_PATH = '/auth/refresh'
-    JWT_ACCESS_TOKEN_EXPIRES = timedelta(minutes=30)
+    JWT_SECRET_KEY = _env("JWT_SECRET_KEY")
+    JWT_TOKEN_LOCATION = _env_list("JWT_TOKEN_LOCATION")
+    JWT_COOKIE_SECURE = _env_bool("JWT_COOKIE_SECURE")
+    JWT_COOKIE_SAMESITE = _env("JWT_COOKIE_SAMESITE")
+    JWT_COOKIE_CSRF_PROTECT = _env_bool("JWT_COOKIE_CSRF_PROTECT")
+    JWT_COOKIE_NAME = _env("JWT_COOKIE_NAME")
+    JWT_ACCESS_COOKIE_PATH = _env("JWT_ACCESS_COOKIE_PATH")
+    JWT_REFRESH_COOKIE_PATH = _env("JWT_REFRESH_COOKIE_PATH")
+    JWT_ACCESS_TOKEN_EXPIRES = timedelta(minutes=_env_int("JWT_ACCESS_TOKEN_MINUTES"))
 
-    @staticmethod
-    def get_db_connection():
-        conn = psycopg2.connect(
-            dbname=DB_NAME,
-            user=DB_USER,
-            password=DB_PASS,
-            host=DB_HOST,
-            port=DB_PORT
-        )
-        conn.autocommit = True
-        return conn
 
-    # If you are using playwright, please make sure to set debug=False
-    @staticmethod
-    def find_available_port():
-        with socket() as s:
-            s.bind(("", 0))
-            current_port = s.getsockname()[1]
+class DevelopmentConfig(Config):
+    DEBUG = _env_bool("DEBUG")
 
-        os.environ["CURRENT_PORT"] = str(current_port)
 
-        env_path = ".env"
-        lines = []
-        found = False
+class TestingConfig(Config):
+    TESTING = _env_bool("TESTING")
+    WTF_CSRF_ENABLED = _env_bool("WTF_CSRF_ENABLED")
+    SQLALCHEMY_DATABASE_URI = _env("TEST_DATABASE_URL")
 
-        if os.path.exists(env_path):
-            with open(env_path, "r") as f:
-                for line in f:
-                    if line.startswith("CURRENT_PORT="):
-                        lines.append(f"CURRENT_PORT={current_port}\n")
-                        found = True
-                    else:
-                        lines.append(line)
-        if not found:
-            lines.append(f"CURRENT_PORT={current_port}\n")
 
-        with open(env_path, "w") as f:
-            f.writelines(lines)
+class ProductionConfig(Config):
+    DEBUG = _env_bool("DEBUG")
+    JWT_COOKIE_SECURE = _env_bool("JWT_COOKIE_SECURE")
 
-        return current_port
+
+config = {
+    "development": DevelopmentConfig,
+    "testing": TestingConfig,
+    "production": ProductionConfig,
+    "default": DevelopmentConfig,
+}

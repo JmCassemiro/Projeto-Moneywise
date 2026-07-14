@@ -18,6 +18,7 @@
       <div class="form-container">
         <h1>Fale com a gente!</h1>
         <form id="form-input" method="POST">
+          <input type="hidden" name="csrf_token" value="{{ csrf_token() }}">
           <label for="name">Nome</label>
           <input type="text" id="name" name="name" required />
 

@@ -1,101 +1,113 @@
-from config import db
-from flask import flash, url_for
+from datetime import datetime
+
+from sqlalchemy.exc import SQLAlchemyError
+
+from app.exceptions import AuthenticationError, NotFoundError, ValidationError
+from app.extensions import db
 from app.users_authentication.models import User
-from flask_mail import Message
-from config import mail
-from urllib.parse import quote
-from app.users_authentication.utils.token import (
-    generate_reset_token,
-    confirm_reset_token,
-)
-from app.users_authentication.services.reset_password_form \
-    import ResetPasswordForm
-
-from urllib.parse import unquote
-from flask import redirect, render_template
+from app.users_authentication.repositories import UserRepository
 
 
-def delete_user_logic(user, password):
-    if user.check_password(password):
+class UserService:
+    @staticmethod
+    def get_user(user_id: int | str) -> User:
+        user = UserRepository.get_by_id(user_id)
+        if not user:
+            raise NotFoundError("Usuario nao encontrado.")
+        return user
+
+    @staticmethod
+    def create_user(
+        name: str,
+        email: str,
+        password: str,
+        birthday,
+    ) -> User:
+        if UserRepository.find_by_email(email):
+            raise ValidationError("Email ja cadastrado.")
+        if UserRepository.find_by_name(name):
+            raise ValidationError("Usuario ja cadastrado.")
+
+        user = User(
+            email=email,
+            name=name,
+            password=password,
+            birthday=birthday,
+        )
         try:
-            db.session.delete(user)
-            db.session.commit()
-            return True
-        except Exception as e:
+            return UserRepository.add(user)
+        except SQLAlchemyError as exc:
             db.session.rollback()
-            print(f"[ERRO] Falha ao deletar usuário: {e}")
+            raise ValidationError("Erro ao criar conta. Tente novamente.") from exc
 
+    @staticmethod
+    def authenticate(email: str, password: str) -> User | None:
+        user = UserRepository.find_by_email(email)
+        if user and user.check_password(password):
+            return user
+        return None
 
-def send_reset_email(user, token):
-    safe_token = quote(token)
+    @staticmethod
+    def update_profile(user_id: int | str, data: dict) -> User:
+        user = UserService.get_user(user_id)
 
-    reset_url = url_for(
-        "users.reset_password", token=safe_token, _external=True
-    )
+        name = (data.get("name") or "").strip()
+        email = (data.get("email") or "").strip()
+        birthday = UserService._parse_birthday(data.get("birthday"))
 
-    msg = Message(
-        subject="Recuperação de senha - MoneyWise",
-        recipients=[user.email],
-        html=f"""
-        <p>Olá, {user.name}!</p>
-        <p>Para redefinir sua senha, clique no botão abaixo:</p>
-        <p>
-            <a href="{reset_url}"
-               style="display: inline-block;
-                      background-color: #efa23b;
-                      color: #1f1f23;
-                      text-decoration: none;
-                      font-weight: bold;
-                      padding: 12px 20px;
-                      border-radius: 6px;
-                      font-family: 'Segoe UI', Tahoma, sans-serif;
-                      font-size: 16px;
-                      transition: background-color 0.3s ease;">
-                Redefinir Senha
-            </a>
-        </p>
-        <p>Se você não solicitou isso,
-           entre em contato com o suporte MoneyWise.</p>
-        <p>Atenciosamente,<br>Equipe MoneyWise</p>
-        """
-    )
+        if not name:
+            raise ValidationError("Nome e obrigatorio.")
+        if not email:
+            raise ValidationError("Email e obrigatorio.")
 
-    mail.send(msg)
+        existing_user = UserRepository.find_by_email(email)
+        if existing_user and existing_user.id != user.id:
+            raise ValidationError("Email ja cadastrado.")
 
+        user.name = name
+        user.email = email
+        if birthday:
+            user.birthday = birthday
 
-def process_reset_request(form):
-    if form.validate_on_submit():
-        user = User.query.filter_by(email=form.email.data).first()
-        if user:
-            token = generate_reset_token(user.email)
-            send_reset_email(user, token)
-            return True
-        else:
-            flash("E-mail não cadastrado.", "danger")
-            return False
-    return False
+        try:
+            db.session.commit()
+            return user
+        except SQLAlchemyError as exc:
+            db.session.rollback()
+            raise ValidationError(
+                "Erro ao atualizar perfil. Tente novamente."
+            ) from exc
 
+    @staticmethod
+    def delete_account(user_id: int | str, password: str) -> None:
+        user = UserService.get_user(user_id)
+        if not user.check_password(password):
+            raise AuthenticationError("Senha incorreta. Conta nao foi excluida.")
 
-def reset_user_password(user, new_password):
-    user.set_password(new_password)
-    db.session.commit()
+        try:
+            UserRepository.delete(user)
+        except SQLAlchemyError as exc:
+            db.session.rollback()
+            raise ValidationError("Erro ao excluir conta.") from exc
 
+    @staticmethod
+    def reset_password(user: User, new_password: str) -> None:
+        user.set_password(new_password)
+        try:
+            db.session.commit()
+        except SQLAlchemyError as exc:
+            db.session.rollback()
+            raise ValidationError("Erro ao redefinir senha.") from exc
 
-def reset_password_logic(token, form_class=ResetPasswordForm):
-    token = unquote(token)
-    email = confirm_reset_token(token)
-    if not email:
-        flash("Link inválido ou expirado.", category="danger")
-        return redirect(url_for("users.forgot_password_page"))
+    @staticmethod
+    def _parse_birthday(value: str | None):
+        if not value:
+            return None
 
-    form = form_class()
-    if form.validate_on_submit():
-        user = User.query.filter_by(email=email).first()
-        if user:
-            reset_user_password(user, form.password.data)
-            flash("Senha redefinida com sucesso!", category="success")
-            return redirect(url_for("users.signin_page"))
-        else:
-            flash("Usuário não encontrado.", category="danger")
+        for date_format in ("%Y-%m-%d", "%d/%m/%Y"):
+            try:
+                return datetime.strptime(value, date_format).date()
+            except ValueError:
+                continue
 
-    return render_template("reset_password_page.html", form=form)
+        raise ValidationError("Formato de data invalido.")
