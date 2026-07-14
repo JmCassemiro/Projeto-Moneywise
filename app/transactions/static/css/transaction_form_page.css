@@ -20,7 +20,7 @@ body {
   max-width: 900px;
 }
 
-form>* {
+form > * {
   margin: 20px 0;
 }
 
@@ -35,7 +35,6 @@ form>* {
   display: flex;
   gap: 30px;
 }
-
 
 .first-input-row .title-container {
   width: 100%;
@@ -53,7 +52,7 @@ form>* {
   padding: 0;
 }
 
-.second-input-row>* {
+.second-input-row > * {
   width: 100%;
 }
 
@@ -65,10 +64,104 @@ textarea {
   margin: 8px 0;
   border-radius: 5px;
   border: none;
-  background-color: #18181B;
+  background-color: #18181b;
   text-decoration: none;
   color: #9a9a9a;
   font-size: 20px;
+}
+
+input[type="date"] {
+  color-scheme: dark;
+  cursor: pointer;
+  padding-right: 12px;
+}
+
+input[type="date"]:hover,
+input[type="date"]:focus {
+  color: #c3c3c3;
+  outline: 1px solid #7e9dca;
+  outline-offset: 2px;
+}
+
+input[type="date"]::-webkit-calendar-picker-indicator {
+  width: 22px;
+  height: 22px;
+  padding: 4px;
+  border-radius: 5px;
+  cursor: pointer;
+  filter: invert(73%) sepia(14%) saturate(891%) hue-rotate(176deg)
+    brightness(90%) contrast(85%);
+  transition:
+    background-color 0.2s ease,
+    filter 0.2s ease;
+}
+
+input[type="date"]::-webkit-calendar-picker-indicator:hover {
+  background-color: rgba(126, 157, 202, 0.18);
+  filter: invert(86%) sepia(16%) saturate(497%) hue-rotate(177deg)
+    brightness(96%) contrast(91%);
+}
+
+input[type="number"] {
+  appearance: textfield;
+  -moz-appearance: textfield;
+}
+
+input[type="number"]::-webkit-inner-spin-button,
+input[type="number"]::-webkit-outer-spin-button {
+  margin: 0;
+  appearance: none;
+  -webkit-appearance: none;
+}
+
+.number-stepper {
+  display: grid;
+  grid-template-columns: minmax(0, 1fr) 42px;
+  align-items: stretch;
+  width: 100%;
+  margin: 8px 0;
+  border-radius: 5px;
+  background-color: #18181b;
+  overflow: hidden;
+}
+
+.number-stepper input[type="number"] {
+  margin: 0;
+  border-radius: 5px 0 0 5px;
+}
+
+.number-stepper-controls {
+  display: grid;
+  grid-template-rows: 1fr 1fr;
+  border-left: 1px solid rgba(126, 157, 202, 0.25);
+}
+
+.number-stepper button {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  min-width: 42px;
+  padding: 0;
+  border: none;
+  background-color: #202127;
+  color: #7e9dca;
+  cursor: pointer;
+  font-size: 14px;
+  line-height: 1;
+  transition:
+    background-color 0.2s ease,
+    color 0.2s ease;
+}
+
+.number-stepper button:first-child {
+  border-bottom: 1px solid rgba(126, 157, 202, 0.25);
+}
+
+.number-stepper button:hover,
+.number-stepper button:focus-visible {
+  background-color: #7e9dca;
+  color: #18181b;
+  outline: none;
 }
 
 select {
@@ -95,11 +188,11 @@ textarea {
   width: auto;
   height: auto;
   transform: scale(1.5);
-  accent-color: #7E9DCA;
+  accent-color: #7e9dca;
 }
 
 .is_recurring_content .checkbox_label {
-  color: #C3C3C3;
+  color: #c3c3c3;
   font-size: 24px;
   margin: 0 0 0 10px;
   width: auto;
@@ -111,8 +204,6 @@ textarea {
   margin: 0;
   display: flex;
 }
-
-
 
 .transaction-type-buttons {
   display: flex;
@@ -137,13 +228,13 @@ textarea {
 }
 
 .income-btn {
-  background-color: #18181B;
-  color: #92CA7E;
+  background-color: #18181b;
+  color: #92ca7e;
 }
 
 .expense-btn {
-  background-color: #18181B;
-  color: #CA7E7E;
+  background-color: #18181b;
+  color: #ca7e7e;
 }
 
 .options-container {
@@ -159,32 +250,45 @@ textarea {
 }
 
 .delete-btn {
-  background-color: transparent;
-  border: none;
-}
-
-.delete-btn a {
-  background-color: transparent;
-  text-decoration: none;
-  border: 1px solid #EFA23B;
-  color: #EFA23B;
-  padding: 10px;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  gap: 8px;
+  min-height: 44px;
+  padding: 10px 16px;
+  background-color: rgba(202, 126, 126, 0.12);
+  border: 1px solid #ca7e7e;
   border-radius: 5px;
+  color: #f0a0a0;
   cursor: pointer;
   font-size: 20px;
-  display: block;
+  line-height: 1;
+  transition:
+    background-color 0.2s ease,
+    color 0.2s ease,
+    transform 0.2s ease;
 }
 
-.delete-btn a:hover {
-  background-color: #EFA23B;
-  color: #26262B;
+.delete-btn:hover {
+  background-color: #ca7e7e;
+  color: #26262b;
+  transform: translateY(-1px);
+}
+
+.delete-btn:focus-visible {
+  outline: 2px solid #f0a0a0;
+  outline-offset: 3px;
+}
+
+.delete-btn i {
+  font-size: 18px;
 }
 
 .submit-btn,
 .edit-btn {
   background-color: transparent;
-  border: 1px solid #7E9DCA;
-  color: #7E9DCA;
+  border: 1px solid #7e9dca;
+  color: #7e9dca;
   padding: 10px;
   border-radius: 5px;
   cursor: pointer;
@@ -194,13 +298,13 @@ textarea {
 
 .submit-btn:hover,
 .edit-btn:hover {
-  background-color: #7E9DCA;
-  color: #26262B;
+  background-color: #7e9dca;
+  color: #26262b;
 }
 
 .cancel-btn {
-  border: 1px solid #C3C3C3;
-  color: #C3C3C3;
+  border: 1px solid #c3c3c3;
+  color: #c3c3c3;
   padding: 10px;
   border-radius: 5px;
   cursor: pointer;
@@ -211,6 +315,6 @@ textarea {
 }
 
 .cancel-btn:hover {
-  background-color: #C3C3C3;
-  color: #26262B;
+  background-color: #c3c3c3;
+  color: #26262b;
 }

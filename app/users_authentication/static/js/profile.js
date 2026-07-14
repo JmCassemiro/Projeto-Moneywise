@@ -2,11 +2,11 @@ document.addEventListener("DOMContentLoaded", () => {
   const editBtn = document.getElementById("edit-btn");
   const inputs = document.querySelectorAll(".info input");
   const title = document.querySelector("h2");
+  const csrfToken = document.querySelector('meta[name="csrf-token"]')?.content;
 
   let originalValues = [];
   let buttonWrapper = null;
 
-  // Botões de ação
   const cancelBtn = document.createElement("button");
   cancelBtn.textContent = "Cancelar";
   cancelBtn.classList.add("btn-cancelar");
@@ -15,11 +15,10 @@ document.addEventListener("DOMContentLoaded", () => {
   saveBtn.textContent = "Salvar";
   saveBtn.classList.add("btn-salvar");
 
-  // Lógica de cancelar edição
   cancelBtn.addEventListener("click", () => {
     title.firstChild.textContent = "Perfil";
-    inputs.forEach((input, i) => {
-      input.value = originalValues[i];
+    inputs.forEach((input, index) => {
+      input.value = originalValues[index];
       input.disabled = true;
       input.style.backgroundColor = "#0F0F10";
       input.style.color = "#FFFFFF";
@@ -30,22 +29,16 @@ document.addEventListener("DOMContentLoaded", () => {
     editBtn.style.display = "inline";
   });
 
-  // Lógica de salvar as alterações
   saveBtn.addEventListener("click", () => {
     const [name, email, birthday] = [...inputs].map((input) => input.value);
 
-    // Converte a data de nascimento para o formato adequado (YYYY-MM-DD) para o backend
-    const formattedBirthday = new Date(birthday.split("/").reverse().join("-"))
-      .toISOString()
-      .split("T")[0];
-
-    // Envia os dados para a rota do servidor
     fetch("/profile/update", {
       method: "POST",
       headers: {
         "Content-Type": "application/json",
+        "X-CSRFToken": csrfToken,
       },
-      body: JSON.stringify({ name, email, birthday: formattedBirthday }),
+      body: JSON.stringify({ name, email, birthday }),
     })
       .then((res) => res.json())
       .then((data) => {
@@ -53,12 +46,14 @@ document.addEventListener("DOMContentLoaded", () => {
           alert("Perfil atualizado com sucesso!");
           location.reload();
         } else {
-          alert("Erro ao atualizar perfil.");
+          alert(data.message || "Erro ao atualizar perfil.");
         }
+      })
+      .catch(() => {
+        alert("Erro ao atualizar perfil.");
       });
   });
 
-  // Lógica de editar perfil
   editBtn.addEventListener("click", () => {
     title.firstChild.textContent = "Editar Perfil";
     editBtn.style.display = "none";
@@ -78,37 +73,35 @@ document.addEventListener("DOMContentLoaded", () => {
     document.querySelector(".info").appendChild(buttonWrapper);
   });
 
-  
   const deleteBtn = document.getElementById("delete-account-btn");
   const deleteModal = document.getElementById("delete-confirm-modal");
   const cancelDeleteBtn = document.getElementById("cancel-delete-btn");
   const flashMessage = document.querySelector(".flash-message");
-  const deleteErrorMessage = document.querySelector("delete-error-message");
-   
-  
+  const deleteErrorMessage = document.querySelector("#delete-error-message");
+  const passwordField = document.querySelector("#delete-account-confirm-form input[type='password']");
+
   if (flashMessage) {
-     deleteModal.style.display = "block";
-   }
+    deleteModal.style.display = "block";
+  }
 
   if (deleteBtn) {
-    deleteBtn.addEventListener("click", (e) => {
-      e.preventDefault();
-    
+    deleteBtn.addEventListener("click", (event) => {
+      event.preventDefault();
       deleteModal.style.display = "block";
     });
+  }
 
+  if (cancelDeleteBtn) {
     cancelDeleteBtn.addEventListener("click", () => {
       deleteModal.style.display = "none";
-      
+
       if (deleteErrorMessage) {
         deleteErrorMessage.style.display = "none";
       }
 
-      if(passwordField){
+      if (passwordField) {
         passwordField.value = "";
       }
-
     });
   }
 });
-

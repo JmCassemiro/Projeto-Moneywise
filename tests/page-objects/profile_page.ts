@@ -23,7 +23,7 @@ export class ProfilePage {
   }
 
   async editProfile() {
-      await this.page.getByRole('button', { name: '' }).click();
+      await this.page.getByRole('button', { name: 'Editar perfil' }).click();
       await this.page.getByRole('textbox').first().fill('teste editado');
       await this.page.getByRole('textbox').nth(1).fill('teste.editado@teste.com');
       await this.page.getByRole('textbox').nth(2).fill('29/09/2010');
